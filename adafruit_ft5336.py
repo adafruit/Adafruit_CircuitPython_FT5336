@@ -29,6 +29,7 @@ Implementation Notes
 from adafruit_register.i2c_bits import ROBits
 from adafruit_bus_device.i2c_device import I2CDevice
 from micropython import const
+
 try:
     from typing import List, Tuple
 except ImportError:
@@ -49,14 +50,20 @@ _TOUCH1_XL = const(0x04)
 _TOUCH1_YH = const(0x05)
 _TOUCH1_YL = const(0x06)
 
+
 class Adafruit_FT5336:
     """Adafruit FT5336 touch screen driver"""
+
     # Define read-only register bits for vendor ID, chip ID, and number of touches.
     _vend_id = ROBits(8, _REG_VENDID, 0)  # 8-bit read-only register for vendor ID
     _chip_id = ROBits(8, _REG_CHIPID, 0)  # 8-bit read-only register for chip ID
-    _num_touches = ROBits(8, _REG_NUMTOUCHES, 0)  # 8-bit read-only register for number of touches
+    _num_touches = ROBits(
+        8, _REG_NUMTOUCHES, 0
+    )  # 8-bit read-only register for number of touches
 
-    def __init__(self, i2c, i2c_addr: int = _DEFAULT_ADDR, max_touches: int = 5) -> None:
+    def __init__(
+        self, i2c, i2c_addr: int = _DEFAULT_ADDR, max_touches: int = 5
+    ) -> None:
         """Initialization over I2C
 
         :param int i2c_addr: I2C address (default 0x38)
@@ -68,9 +75,9 @@ class Adafruit_FT5336:
         self.max_touches = max_touches  # Maximum number of touches to track
 
         # Initialize touch point arrays
-        self._touchX: List[int] = [0] * self.max_touches
-        self._touchY: List[int] = [0] * self.max_touches
-        self._touchID: List[int] = [0] * self.max_touches
+        self._touch_x: List[int] = [0] * self.max_touches
+        self._touch_y: List[int] = [0] * self.max_touches
+        self._touch_id: List[int] = [0] * self.max_touches
 
         # Verify device identity by checking the vendor and chip IDs
         if self._vend_id != _VENDID:
@@ -88,44 +95,49 @@ class Adafruit_FT5336:
             self._touches = 0
 
         for i in range(self._touches):
-            self._touchX[i] = (buffer[_TOUCH1_XH + i * 6] & 0x0F) << 8 | buffer[_TOUCH1_XL + i * 6]
-            self._touchY[i] = (buffer[_TOUCH1_YH + i * 6] & 0x0F) << 8 | buffer[_TOUCH1_YL + i * 6]
-            self._touchID[i] = buffer[_TOUCH1_YH + i * 6] >> 4
+            self._touch_x[i] = (buffer[_TOUCH1_XH + i * 6] & 0x0F) << 8 | buffer[
+                _TOUCH1_XL + i * 6
+            ]
+            self._touch_y[i] = (buffer[_TOUCH1_YH + i * 6] & 0x0F) << 8 | buffer[
+                _TOUCH1_YL + i * 6
+            ]
+            self._touch_id[i] = buffer[_TOUCH1_YH + i * 6] >> 4
 
     @property
     def touched(self) -> int:
         """Count of touch inputs detected
-        
+
         :return: Count of touch inputs detected (0-max_touches)
         :rtype: int
         """
         n = self._num_touches
         return 0 if n > self.max_touches else n
-    
+
     @property
     def points(self) -> List:
         """X, Y and Z values from each available touch input
-        
+
         :return: X, Y and Z values in a list
         :rtype: List
         """
         self._read_data()
         points = []
         for i in range(min(self._touches, self.max_touches)):
-            point = (self._touchX[i], self._touchY[i], 1)
+            point = (self._touch_x[i], self._touch_y[i], 1)
             points.append(point)
 
         return points
 
     def point(self, point_index: int) -> Tuple:
         """X, Y and Z value from a specified touch input
-        
+
         :param int point_index: Touch input to read (0 - max_touches)
         :return: X, Y and Z values
         :rtype: Tuple
         """
         self._read_data()
         if self._touches == 0 or point_index >= self._touches:
-            return (0, 0, 0)
+            value = (0, 0, 0)
         else:
-            return (self._touchX[point_index], self._touchY[point_index], 1)
+            value = (self._touch_x[point_index], self._touch_y[point_index], 1)
+        return value
