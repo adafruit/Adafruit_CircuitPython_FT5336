@@ -26,8 +26,6 @@ extensions = [
 autodoc_mock_imports = [
     "micropython",
     "busio",
-    "adafruit_bus_device",
-    "adafruit_register",
 ]
 
 autodoc_preserve_defaults = True
