@@ -30,7 +30,6 @@ autodoc_mock_imports = [
 
 autodoc_preserve_defaults = True
 
-
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "BusDevice": ("https://docs.circuitpython.org/projects/busdevice/en/latest/", None),
