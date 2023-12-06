@@ -94,6 +94,18 @@ Usage Example
 
 .. code-block:: python
 
+	import time
+	import board
+	import adafruit_ft5336
+
+	i2c = board.I2C()
+	touch = adafruit_ft5336.Adafruit_FT5336(i2c)
+
+	while True:
+		t = touch.points
+		print(t)
+		time.sleep(0.1)
+
 Documentation
 =============
 API documentation for this library can be found on `Read the Docs <https://docs.circuitpython.org/projects/ft5336/en/latest/>`_.
