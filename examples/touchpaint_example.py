@@ -41,11 +41,7 @@ color_palette[5] = 0x0000FF
 color_palette[6] = 0xFF00FF
 color_palette[7] = 0xFFFFFF
 
-tile_grid = displayio.TileGrid(
-    bitmap,
-    pixel_shader=color_palette
-    
-)
+tile_grid = displayio.TileGrid(bitmap, pixel_shader=color_palette)
 # tilegrid is flipped to align x, y with touch screen x, y
 tile_grid.flip_y = True
 tile_grid.flip_x = True
@@ -73,10 +69,7 @@ while True:
                 x = t[0]
                 y = t[1]
                 print(x, y)
-                if (
-                    not 0 <= x < display.width
-                    or not 0 <= y < display.height
-                ):
+                if not 0 <= x < display.width or not 0 <= y < display.height:
                     continue  # Skip out of bounds touches
                 if y < palette_width:
                     current_color = bitmap[x, y]
