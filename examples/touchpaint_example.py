@@ -13,8 +13,12 @@ import adafruit_ft5336
 displayio.release_displays()
 
 spi = board.SPI()
-tft_cs = board.TX
-tft_dc = board.RX
+# for eyespi bff
+# tft_cs = board.TX
+# tft_dc = board.RX
+# else:
+tft_cs = board.D9
+tft_dc = board.D10
 
 display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
 # display is rotated to align x, y with touch screen x, y
