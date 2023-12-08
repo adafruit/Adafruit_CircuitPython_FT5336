@@ -7,8 +7,8 @@ Touch paint example for HX83570 + FT5336 TFT Breakout
 
 import board
 import displayio
-import adafruit_ft5336
 from adafruit_hx8357 import HX8357
+import adafruit_ft5336
 
 displayio.release_displays()
 
