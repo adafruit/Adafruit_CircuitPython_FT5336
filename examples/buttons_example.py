@@ -8,10 +8,10 @@ Touch buttons example for HX83570 + FT5336 TFT Breakout
 import time
 import board
 import displayio
+import terminalio
 from adafruit_hx8357 import HX8357
 from adafruit_button import Button
 import adafruit_ft5336
-import terminalio
 
 displayio.release_displays()
 
@@ -39,20 +39,26 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 spots = [
-    {'label': "1", 'pos': (10, 10), 'color': RED},
-    {'label': "2", 'pos': (165, 10), 'color': YELLOW},
-    {'label': "3", 'pos': (10, 245), 'color': GREEN},
-    {'label': "4", 'pos': (165, 245), 'color': BLUE},
-    ]
+    {"label": "1", "pos": (10, 10), "color": RED},
+    {"label": "2", "pos": (165, 10), "color": YELLOW},
+    {"label": "3", "pos": (10, 245), "color": GREEN},
+    {"label": "4", "pos": (165, 245), "color": BLUE},
+]
 
 buttons = []
 for spot in spots:
-    button = Button(x=spot['pos'][0], y=spot['pos'][1],
-                    width=145, height=225,
-                    style=Button.ROUNDRECT,
-                    fill_color=spot['color'], outline_color=0xFFFFFF,
-                    label=spot['label'], label_font=terminalio.FONT,
-                    label_color=0x000000)
+    button = Button(
+        x=spot["pos"][0],
+        y=spot["pos"][1],
+        width=145,
+        height=225,
+        style=Button.ROUNDRECT,
+        fill_color=spot["color"],
+        outline_color=0xFFFFFF,
+        label=spot["label"],
+        label_font=terminalio.FONT,
+        label_color=0x000000,
+    )
     splash.append(button)
     buttons.append(button)
 
