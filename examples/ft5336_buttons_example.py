@@ -8,6 +8,14 @@ Touch buttons example for HX83570 + FT5336 TFT Breakout
 import time
 import board
 import displayio
+
+# Compatibility with both CircuitPython 8.x.x and 9.x.x.
+# Remove after 8.x.x is no longer a supported release.
+try:
+    from fourwire import FourWire
+except ImportError:
+    from displayio import FourWire
+
 import terminalio
 from adafruit_hx8357 import HX8357
 from adafruit_button import Button
@@ -23,7 +31,7 @@ spi = board.SPI()
 tft_cs = board.D9
 tft_dc = board.D10
 
-display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
+display_bus = FourWire(spi, command=tft_dc, chip_select=tft_cs)
 # display is rotated to align x, y with touch screen x, y
 display = HX8357(display_bus, width=320, height=480, rotation=270)
 
