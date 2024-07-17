@@ -24,11 +24,11 @@ tft_cs = board.D9
 tft_dc = board.D10
 
 display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
-# display is rotated to align x, y with touch screen x, y
-display = HX8357(display_bus, width=320, height=480, rotation=270)
+display = HX8357(display_bus, width=480, height=320, rotation=0)
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
-touch = adafruit_ft5336.Adafruit_FT5336(i2c)
+# touch coordinates are adjusted to match display with 0 rotation
+touch = adafruit_ft5336.Adafruit_FT5336(i2c, invert_x=True, swap_xy=True)
 
 splash = displayio.Group()
 display.root_group = splash
