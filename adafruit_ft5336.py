@@ -37,7 +37,7 @@ except ImportError:
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_FT5336.git"
-
+# pylint: disable=too-many-instance-attributes
 _DEFAULT_ADDR = const(0x38)
 _REG_VENDID = const(0xA3)
 _REG_CHIPID = const(0xA8)
@@ -49,6 +49,8 @@ _TOUCH1_XH = const(0x03)
 _TOUCH1_XL = const(0x04)
 _TOUCH1_YH = const(0x05)
 _TOUCH1_YL = const(0x06)
+_SCREEN_WIDTH = 320
+_SCREEN_HEIGHT = 480
 
 
 class Adafruit_FT5336:
@@ -61,13 +63,23 @@ class Adafruit_FT5336:
         8, _REG_NUMTOUCHES, 0
     )  # 8-bit read-only register for number of touches
 
+    # pylint: disable=too-many-arguments
     def __init__(
-        self, i2c, i2c_addr: int = _DEFAULT_ADDR, max_touches: int = 5
+        self,
+        i2c,
+        i2c_addr: int = _DEFAULT_ADDR,
+        max_touches: int = 5,
+        invert_x: bool = False,
+        invert_y: bool = False,
+        swap_xy: bool = False,
     ) -> None:
         """Initialization over I2C
 
         :param int i2c_addr: I2C address (default 0x38)
         :param int max_touches: Maximum number of touch points to track. Defaults to 5.
+        :param bool invert_x: Invert X axis. Defaults to False.
+        :param bool invert_y: Invert Y axis. Defaults to False.
+        :param bool swap_xy: Swap X and Y axes. Defaults to False.
         """
         self.i2c_device = I2CDevice(i2c, i2c_addr)  # I2C device instance
         self.i2c_addr = i2c_addr  # Store the I2C address
@@ -78,6 +90,15 @@ class Adafruit_FT5336:
         self._touch_x: List[int] = [0] * self.max_touches
         self._touch_y: List[int] = [0] * self.max_touches
         self._touch_id: List[int] = [0] * self.max_touches
+
+        # Inversion and swap properties
+        self._invert_x = invert_x
+        self._invert_y = invert_y
+        self._swap_xy = swap_xy
+
+        # Set screen dimensions
+        self._screen_width = _SCREEN_WIDTH
+        self._screen_height = _SCREEN_HEIGHT
 
         # Verify device identity by checking the vendor and chip IDs
         if self._vend_id != _VENDID:
@@ -95,12 +116,20 @@ class Adafruit_FT5336:
             self._touches = 0
 
         for i in range(self._touches):
-            self._touch_x[i] = (buffer[_TOUCH1_XH + i * 6] & 0x0F) << 8 | buffer[
-                _TOUCH1_XL + i * 6
-            ]
-            self._touch_y[i] = (buffer[_TOUCH1_YH + i * 6] & 0x0F) << 8 | buffer[
-                _TOUCH1_YL + i * 6
-            ]
+            x = (buffer[_TOUCH1_XH + i * 6] & 0x0F) << 8 | buffer[_TOUCH1_XL + i * 6]
+            y = (buffer[_TOUCH1_YH + i * 6] & 0x0F) << 8 | buffer[_TOUCH1_YL + i * 6]
+
+            if self._invert_x:
+                x = self._screen_width - 1 - x
+
+            if self._invert_y:
+                y = self._screen_height - 1 - y
+
+            if self._swap_xy:
+                x, y = y, x
+
+            self._touch_x[i] = x
+            self._touch_y[i] = y
             self._touch_id[i] = buffer[_TOUCH1_YH + i * 6] >> 4
 
     @property
@@ -141,3 +170,30 @@ class Adafruit_FT5336:
         else:
             value = (self._touch_x[point_index], self._touch_y[point_index], 1)
         return value
+
+    @property
+    def invert_x(self) -> bool:
+        """Whether the X axis is inverted"""
+        return self._invert_x
+
+    @invert_x.setter
+    def invert_x(self, value: bool):
+        self._invert_x = value
+
+    @property
+    def invert_y(self) -> bool:
+        """Whether the Y axis is inverted"""
+        return self._invert_y
+
+    @invert_y.setter
+    def invert_y(self, value: bool):
+        self._invert_y = value
+
+    @property
+    def swap_xy(self) -> bool:
+        """Whether the X and Y axes are swapped"""
+        return self._swap_xy
+
+    @swap_xy.setter
+    def swap_xy(self, value: bool):
+        self._swap_xy = value
