@@ -6,7 +6,9 @@ Demo for the FT5336. Reads all available touch input coordinates.
 """
 
 import time
+
 import board
+
 import adafruit_ft5336
 
 i2c = board.I2C()

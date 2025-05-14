@@ -26,8 +26,8 @@ Implementation Notes
 * Adafruit's Register library: https://github.com/adafruit/Adafruit_CircuitPython_Register
 """
 
-from adafruit_register.i2c_bits import ROBits
 from adafruit_bus_device.i2c_device import I2CDevice
+from adafruit_register.i2c_bits import ROBits
 from micropython import const
 
 try:
@@ -37,7 +37,6 @@ except ImportError:
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_FT5336.git"
-# pylint: disable=too-many-instance-attributes
 _DEFAULT_ADDR = const(0x38)
 _REG_VENDID = const(0xA3)
 _REG_CHIPID = const(0xA8)
@@ -59,11 +58,8 @@ class Adafruit_FT5336:
     # Define read-only register bits for vendor ID, chip ID, and number of touches.
     _vend_id = ROBits(8, _REG_VENDID, 0)  # 8-bit read-only register for vendor ID
     _chip_id = ROBits(8, _REG_CHIPID, 0)  # 8-bit read-only register for chip ID
-    _num_touches = ROBits(
-        8, _REG_NUMTOUCHES, 0
-    )  # 8-bit read-only register for number of touches
+    _num_touches = ROBits(8, _REG_NUMTOUCHES, 0)  # 8-bit read-only register for number of touches
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         i2c,

@@ -8,6 +8,7 @@ Touch paint example for HX83570 + FT5336 TFT Breakout
 import board
 import displayio
 from adafruit_hx8357 import HX8357
+
 import adafruit_ft5336
 
 displayio.release_displays()
@@ -82,10 +83,7 @@ while True:
                         for j in range(pixel_size):
                             x_pixel = x - (pixel_size // 2) + i
                             y_pixel = y - (pixel_size // 2) + j
-                            if (
-                                0 <= x_pixel < display.width
-                                and 0 <= y_pixel < display.height
-                            ):
+                            if 0 <= x_pixel < display.width and 0 <= y_pixel < display.height:
                                 bitmap[x_pixel, y_pixel] = current_color
         except RuntimeError:
             pass
