@@ -6,11 +6,13 @@ Touch buttons example for HX83570 + FT5336 TFT Breakout
 """
 
 import time
+
 import board
 import displayio
 import terminalio
-from adafruit_hx8357 import HX8357
 from adafruit_button import Button
+from adafruit_hx8357 import HX8357
+
 import adafruit_ft5336
 
 displayio.release_displays()
