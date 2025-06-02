@@ -9,6 +9,7 @@ import time
 
 import board
 import displayio
+import fourwire
 import terminalio
 from adafruit_button import Button
 from adafruit_hx8357 import HX8357
@@ -25,7 +26,7 @@ spi = board.SPI()
 tft_cs = board.D9
 tft_dc = board.D10
 
-display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
+display_bus = fourwire.FourWire(spi, command=tft_dc, chip_select=tft_cs)
 display = HX8357(display_bus, width=480, height=320, rotation=0)
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
